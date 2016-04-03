@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		.chats {
+			width: 300px;
+			height: 100px;
+			overflow: auto;
+			background: #ccc;
+		}
+	</style>
+</head>
+<body>
+	<h1>Chat Program</h1>
+	<div class="chats"></div>
+	<input type="text" placeholder="enter a message..." class="messageInput"/>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.js"></script>
+
+	<script>
+		$(document).ready(function() {
+
+			setInterval(function() {
+				
+				$.ajax({
+					type: "GET",
+					url: "/messages",
+					success: function(messages) {
+						
+						var newHtml = "";
+
+						messages.forEach(function(message) {
+							newHtml += "<div>" + message.message + "</div>";
+						});
+
+						$(".chats").html(newHtml);
+					}
+				})
+
+			}, 100)
+
+			$(".messageInput").on("keydown", function(event) {
+				if (event.keyCode === 13) {
+					
+
+					$.ajax({
+					    type: "POST",
+					    url: "/messages",
+					    processData: false,
+					    contentType: 'application/json',
+					    data: JSON.stringify({"message": this.value}),
+					
+					    success: function(r) {
+
+						}
+					});
+
+					this.value = "";
+
+					// send the message;
+				}
+			})
+
+		});
+
+	</script>
+
+</body>
+</html>
